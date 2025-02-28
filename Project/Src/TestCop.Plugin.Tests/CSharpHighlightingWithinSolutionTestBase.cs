@@ -118,14 +118,9 @@ namespace TestCop.Plugin.Tests
 
         protected virtual TestHighlightingDumper CreateHighlightDumper(IPsiSourceFile sourceFile, TextWriter writer)
         {
-            return new TestHighlightingDumper(sourceFile, writer, GetActiveStages(sourceFile.GetSolution()), HighlightingPredicate, CompilerIdsLanguage);
+            return new TestHighlightingDumper(sourceFile, writer, HighlightingPredicate, CompilerIdsLanguage);
         }
 
-        protected virtual IReadOnlyCollection<IDaemonStage> GetActiveStages(ISolution solution)
-        {
-            return DaemonStageManager.GetInstance(solution).Stages;
-        }
-           
         protected virtual bool HighlightingPredicate(IHighlighting highlighting, IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
         {
             return true;
@@ -225,7 +220,7 @@ namespace TestCop.Plugin.Tests
         protected ITextControl OpenTextControl(IProjectFile projectFile, int? caretOffset = null)
         {
             IEditorManager editorManager = projectFile.GetSolution().GetComponent<IEditorManager>();
-            Task<ITextControl> openProjectFileAsync = editorManager.OpenProjectFileAsync(projectFile, new OpenFileOptions(true));
+            Task<ITextControl> openProjectFileAsync = editorManager.OpenProjectFileAsync(projectFile, new OpenFileOptions(FireAndForget: true));
             openProjectFileAsync.Wait();
             return openProjectFileAsync.Result;
         }

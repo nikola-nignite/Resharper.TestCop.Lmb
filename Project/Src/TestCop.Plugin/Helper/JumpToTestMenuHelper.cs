@@ -33,9 +33,9 @@ namespace TestCop.Plugin.Helper
     using JetBrains.Util.Media;
 
     public static class JumpToTestMenuHelper
-    {        
+    {
         //------------------------------------------------------------------------------------------------------------------------
-        public static void PromptToOpenOrCreateClassFiles(Action<JetPopupMenus, JetPopupMenu, JetPopupMenu.ShowWhen> menuDisplayer,Lifetime lifetime, IDataContext context, ISolution solution
+        public static void PromptToOpenOrCreateClassFiles(Action<JetPopupMenus, JetPopupMenu, JetPopupMenu.ShowWhen> menuDisplayer, Lifetime lifetime, IDataContext context, ISolution solution
     , IProject project, IClrTypeName clrTypeClassName, IList<TestCopProjectItem> targetProjects
     , List<IClrDeclaredElement> preferred, List<IClrDeclaredElement> fullList)
         {
@@ -48,7 +48,7 @@ namespace TestCop.Plugin.Helper
             }
             else
             {
-                AppendNavigateToMenuItems(lifetime, solution, fullList, menuItems);                
+                AppendNavigateToMenuItems(lifetime, solution, fullList, menuItems);
             }
 
             MoveBestMatchesToTopWhenSwitchingFromTestToCode(menuItems, project, targetProjects, clrTypeClassName);
@@ -70,8 +70,8 @@ namespace TestCop.Plugin.Helper
 
             menu.KeyboardAcceleration.SetValue(KeyboardAccelerationFlags.Mnemonics);
             menu.NoItemsBanner = WindowlessControlAutomation.Create("No destinations found.");
-            
-            menuDisplayer.Invoke(menus, menu, autoExecuteIfSingleEnabledItem);                        
+
+            menuDisplayer.Invoke(menus, menu, autoExecuteIfSingleEnabledItem);
         }
         //------------------------------------------------------------------------------------------------------------------------
         private static void AppendNavigateToMenuItems(Lifetime lifetime, ISolution solution, List<IClrDeclaredElement> clrDeclaredElements,
@@ -86,7 +86,7 @@ namespace TestCop.Plugin.Helper
                                                                                  declaredElement
                                                                                  ,
                                                                                  p => async () =>
-                                                                                 await editorManager.OpenProjectFileAsync(p, new OpenFileOptions(true)).ConfigureAwait(false)
+                                                                                 await editorManager.OpenProjectFileAsync(p, new OpenFileOptions(FireAndForget: true)).ConfigureAwait(false)
                     );
                 menuItems.AddRange(simpleMenuItems);
             }
@@ -104,8 +104,8 @@ namespace TestCop.Plugin.Helper
         //------------------------------------------------------------------------------------------------------------------------
         private static IList<SimpleMenuItem> DescribeFilesAssociatedWithDeclaredElement(Lifetime lifetime, DocumentManager documentManager, IClrDeclaredElement declaredElement, Func<IProjectFile, Action> clickAction)
         {
-            IList<SimpleMenuItem> menuItems = new List<SimpleMenuItem>();            
-      
+            IList<SimpleMenuItem> menuItems = new List<SimpleMenuItem>();
+
             var projectFiles = GetProjectFiles(documentManager, declaredElement);
 
             foreach (var projectFile in projectFiles)
@@ -163,7 +163,7 @@ namespace TestCop.Plugin.Helper
             }
         }
 
-   
+
         //------------------------------------------------------------------------------------------------------------------------
         public static bool DeriveRelatedFileNameAndAddCreateMenus(IDataContext context, Lifetime lifetime,
             IProject project, IList<TestCopProjectItem> associatedTargetProjects, IList<SimpleMenuItem> currentMenus,
@@ -178,9 +178,9 @@ namespace TestCop.Plugin.Helper
             bool currentFileisTestFile = baseFileName.EndsWith(settings.TestClassSuffixes());
 
             foreach (var testClassSuffix in settings.GetAppropriateTestClassSuffixes(baseFileName))
-            {                
+            {
                 var targetFile = ResharperHelper.UsingFileNameGetClassName(baseFileName).RemoveTrailing(testClassSuffix);
-                
+
                 if (!currentFileisTestFile)
                 {
                     targetFile += testClassSuffix;
@@ -230,20 +230,20 @@ namespace TestCop.Plugin.Helper
             SimpleMenuItem result = new SimpleMenuItem("Create associated file"
                 , null
                 , ResharperHelper.ProtectActionFromReEntry(lifetime, "TestingMenuNavigation"
-                , () => ResharperHelper.CreateFileWithinProject(projectItem, targetFile))) 
+                , () => ResharperHelper.CreateFileWithinProject(projectItem, targetFile)))
             {
                 Style = MenuItemStyle.Enabled,
                 Icon = UnnamedThemedIcons.Agent16x16.Id,
                 Text = new RichText("Create ", TextStyle.FromForeColor(JetRgbaColor.FromArgb(Color.Green.A, Color.Green.R, Color.Green.G, Color.Green.B)))
                     .Append(targetFile, TextStyle.FromForeColor(TextStyle.DefaultForegroundColor)),
                 ShortcutText = new RichText("(" + projectItem.Project.GetPresentableProjectPath()
-                                                + projectItem.SubNamespaceFolder.FullPath.RemoveLeading(projectItem.Project.ProjectFileLocation.Directory.FullPath) 
-                                                + ")", 
+                                                + projectItem.SubNamespaceFolder.FullPath.RemoveLeading(projectItem.Project.ProjectFileLocation.Directory.FullPath)
+                                                + ")",
                     TextStyle.FromForeColor(JetRgbaColor.FromArgb(Color.LightGray.A, Color.LightGray.R, Color.LightGray.G, Color.LightGray.B)))
             };
             menuItems.Add(result);
             return menuItems;
-        }        
+        }
         //------------------------------------------------------------------------------------------------------------------------
         private static IList<IProjectFile> GetProjectFiles(DocumentManager documentManager, IDeclaredElement declaredElement)
         {

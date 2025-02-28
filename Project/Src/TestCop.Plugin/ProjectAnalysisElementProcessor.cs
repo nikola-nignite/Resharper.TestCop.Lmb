@@ -37,7 +37,7 @@ namespace TestCop.Plugin
 
         public IReadOnlyList<HighlightingInfo> Highlightings
         {
-            get { return _highlightingConsumer.Highlightings.AsIReadOnlyList(); }
+            get { return _highlightingConsumer.CollectHighlightings(); }
         }
 
         public ProjectAnalysisElementProcessor(ProjectAnalysisDaemonStageProcess stageProcess, IDaemonProcess process,

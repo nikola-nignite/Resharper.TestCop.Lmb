@@ -9,11 +9,12 @@ using JetBrains.Application.Settings;
 using JetBrains.Application.Threading;
 using JetBrains.ReSharper.Feature.Services.CSharp.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.ReSharper.Features.ReSpeller.ReSharperSpecific.Daemon.Highlighting;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 
 namespace TestCop.Plugin
 {
-    [DaemonStage(StagesBefore = new [] {typeof(FilteringHighlightingDaemonStage)})]
+    [DaemonStage(StagesBefore = new [] {typeof(HighlightingDaemonStage)})]
     public class TestAnalysisDaemonStage : CSharpDaemonStageBase
     {
         private readonly IShellLocks myShellLocks;
@@ -37,7 +38,7 @@ namespace TestCop.Plugin
         }             
     }
 
-    [DaemonStage(StagesBefore = new [] {typeof(FilteringHighlightingDaemonStage)})]
+    [DaemonStage(StagesBefore = new [] {typeof(HighlightingDaemonStage)})]
     public class TestAnalysisProjectDaemonStage : CSharpDaemonStageBase
     {
         /// <summary>
